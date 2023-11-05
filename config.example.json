@@ -1,0 +1,8 @@
+{
+    "clientId": "id of the bot",
+    "guildId": "id of the server",
+    "logs_channel": "id of the logs channel",
+    "widgets": "id where the widgets speak",
+    "embedhex": "unused - hex code like ffffff",
+    "token": "hmm i wonder"
+}
