@@ -42,7 +42,7 @@ const Levels = sequelize.define("levels", {
   },
 });
 let reward = {
-  "3": "1170812444776607854"
+  "9999": "1"
 }
 module.exports = {
   name: Events.MessageCreate,

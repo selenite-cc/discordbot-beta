@@ -8,7 +8,7 @@ module.exports = {
   async execute(interaction) {
     try {
       let eightballEmbed = new EmbedBuilder().setTitle("8ball").addFields( { name: interaction.options.getString("question"), value: eightball[Math.round(Math.random() * (eightball.length - 1))]} );
-      await interaction.reply({ embeds: [eightballEmbed] });
+      await interaction.reply({ embed: [eightballEmbed] });
     } catch (error) {
       console.error(error);
       await interaction.reply("There was an error. Please ping the owner if you see this.");

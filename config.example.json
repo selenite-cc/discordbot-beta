@@ -4,5 +4,10 @@
     "logs_channel": "id of the logs channel",
     "widgets": "id where the widgets speak",
     "embedhex": "unused - hex code like ffffff",
-    "token": "hmm i wonder"
+    "token": "hmm i wonder",
+    "links": [
+        "array",
+        "of",
+        "links"
+    ]
 }

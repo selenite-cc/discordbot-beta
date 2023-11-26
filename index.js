@@ -1,16 +1,16 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, GatewayIntentBits, Events } = require("discord.js");
-const { token, widgets, logs_channel } = require("./config.json");
+const { token, widgets, logs_channel, links } = require("./config.json");
 const client = new Client({ intents: ["Guilds", "GuildMessages", "MessageContent"] });
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("database", "user", "password", {
+const level = new Sequelize("database", "user", "password", {
   host: "localhost",
   dialect: "sqlite",
   logging: false,
   storage: "levels.sqlite",
 });
-const Levels = sequelize.define("levels", {
+const Levels = level.define("levels", {
   userID: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -39,11 +39,34 @@ const Levels = sequelize.define("levels", {
     defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
   },
 });
+const lnk = new Sequelize("database", "user", "password", {
+  host: "localhost",
+  dialect: "sqlite",
+  logging: false,
+  storage: "linkbot.sqlite",
+});
+const link = lnk.define("links", {
+  userID: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+  },
+  number: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+  },
+  firstGen: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+  }
+});
 let stati = [
-  `watching yall be weird`,
-  `donate to patreon plz`,
-  `made by https://skysthelimit.dev`,
-  `https://github.com/selenite-cc`
+  `👨‍💻 Working on Selenite.`,
+  `👀 Watching the Selenite Discord`,
+  `🎮 Playing on Selenite`,
+  `https://github.com/selenite-cc/`,
+  `https://selenite.cc/`
 ]
 client.once(Events.ClientReady, () => {
   Levels.sync();
@@ -91,4 +114,27 @@ client.on("messageDelete", (interaction) => {
 client.on("messageUpdate", (oldm, newm) => {
   const logsChannel = client.channels.cache.get(logs_channel.toString());
   logsChannel.send(`Message edited from ${oldm.author.tag}: ${oldm} - ${newm}`);
+});
+client.on('interactionCreate', async (interaction) => {
+  if(interaction.isButton()){
+    if(interaction.customId === "link"){
+        let [number, firstGen] = await link.findOrCreate({
+          where: { userID: interaction.user.id },
+          defaults: { number: 0, firstGen: 0 },
+          });
+        if(number.firstGen + 3600 < Math.floor(Date.now() / 1000)) {
+          await link.update({ number: 0, firstGen: 0 }, { where: { userID: interaction.user.id } });
+        }
+        if(number.number > 1) {
+          await interaction.reply({ content: `Please wait, you can generate 2 new links <t:${number.firstGen + 3600}:R>.`, ephemeral: true });
+          return;
+        }
+          await interaction.user.send({ content: `**Please do not share links publically.**\nYour link is ${links[Math.floor(Math.random() * links.length)]}` });
+        if(number.number == 0) {
+        await link.update({ number: 1, firstGen: Math.floor(Date.now() / 1000) }, { where: { userID: interaction.user.id } });
+        } else {
+        await link.update({ number: 2 }, { where: { userID: interaction.user.id } });
+        }
+    }
+  }
 });
