@@ -107,7 +107,9 @@ client.on("messageDelete", (interaction) => {
 });
 client.on("messageUpdate", (oldm, newm) => {
   const logsChannel = client.channels.cache.get(logs_channel.toString());
-  logsChannel.send(`Message edited from ${oldm.author.tag}: ${oldm} - ${newm}`);
+  if(!oldm == newm) {
+    logsChannel.send(`Message edited from ${oldm.author.tag}: ${oldm} - ${newm}`);
+  }
 });
 client.on("interactionCreate", async (interaction) => {
   if (interaction.isButton()) {
