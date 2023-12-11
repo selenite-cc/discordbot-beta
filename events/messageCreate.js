@@ -5,6 +5,12 @@ const BadWordsNext = require("bad-words-next");
 const en = require("bad-words-next/data/en.json");
 const Sequelize = require("sequelize");
 const badwords = new BadWordsNext();
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 const sequelize = new Sequelize("database", "user", "password", {
   host: "localhost",
   dialect: "sqlite",
@@ -50,6 +56,12 @@ module.exports = {
     if (interaction.channelId == widgets) {
       if (profanity.exists(interaction.content) || badwords.check(interaction.content)) {
         interaction.delete();
+      } else if (profanity.exists(interaction.author.tag) || badwords.check(interaction.author.tag)) {
+        msg = await interaction.reply("Please change your name.");
+        interaction.delete();
+        await sleep(5000);
+        msg.delete();
+        
       }
     }
     if (!interaction.author.bot) {
