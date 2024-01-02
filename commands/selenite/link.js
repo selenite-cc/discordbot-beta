@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { links } = require("../../config.json");
+const { links, dispenser_logs } = require("../../config.json");
 const Sequelize = require("sequelize");
 const lnk = new Sequelize("database", "user", "password", {
   host: "localhost",
@@ -37,7 +37,10 @@ module.exports = {
       await interaction.reply({ content: `Please wait, you can generate 2 new links <t:${userData.firstGen + 3600}:R>.`, ephemeral: true });
       return;
     }
-    await interaction.user.send({ content: `**Please do not share links publically.**\nYour link is <${links[Math.floor(Math.random() * links.length)]}>` });
+    let userLink = links[Math.floor(Math.random() * links.length)];
+    await interaction.user.send({ content: `**Please do not share links publically.**\nYour link is <${userLink}>` });
+    const dispenserLogs = interaction.client.channels.cache.get(dispenser_logs.toString());
+    dispenserLogs.send(`User ${interaction.user.id} - ${interaction.user.tag} generated a new link: <${userLink}>`);
     if (userData.number == 0) {
       await link.update({ number: 1, firstGen: Math.floor(Date.now() / 1000) }, { where: { userID: interaction.user.id } });
     } else {

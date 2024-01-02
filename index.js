@@ -1,7 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, GatewayIntentBits, Events } = require("discord.js");
-const { token, widgets, logs_channel, links } = require("./config.json");
+const { token, widgets, logs_channel, links, dispenser_logs } = require("./config.json");
 const client = new Client({ intents: ["Guilds", "GuildMessages", "MessageContent"] });
 const Sequelize = require("sequelize");
 const level = new Sequelize("database", "user", "password", {
@@ -125,7 +125,10 @@ client.on("interactionCreate", async (interaction) => {
         await interaction.reply({ content: `Please wait, you can generate 2 new links <t:${userData.firstGen + 3600}:R>.`, ephemeral: true });
         return;
       }
-      await interaction.user.send({ content: `**Please do not share links publically.**\nYour link is <${links[Math.floor(Math.random() * links.length)]}>` });
+      let userLink = links[Math.floor(Math.random() * links.length)]
+      await interaction.user.send({ content: `**Please do not share links publically.**\nYour link is <${userLink}>` });
+      const dispenserLogs = client.channels.cache.get(dispenser_logs.toString());
+      dispenserLogs.send(`User ${interaction.user.id} - ${interaction.user.tag} generated a new link: <${userLink}>`);
       if (userData.number == 0) {
         await link.update({ number: 1, firstGen: Math.floor(Date.now() / 1000) }, { where: { userID: interaction.user.id } });
       } else {
