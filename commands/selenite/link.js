@@ -30,7 +30,7 @@ module.exports = {
       where: { userID: interaction.user.id },
       defaults: { number: 0, firstGen: 0 },
     });
-    if (userData.firstGen + 3600 < Math.floor(Date.now() / 1000)) {
+    if (userData.firstGen + 43200 < Math.floor(Date.now() / 1000)) {
       await userData.update({ number: 0, firstGen: 0 }, { where: { userID: interaction.user.id } });
     } else if (userData.number == 2) {
       console.log(userData.number);
