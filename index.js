@@ -122,7 +122,7 @@ client.on("interactionCreate", async (interaction) => {
         await userData.update({ number: 0, firstGen: 0 }, { where: { userID: interaction.user.id } });
       } else if (userData.number == 2) {
         console.log(userData.number);
-        await interaction.reply({ content: `Please wait, you can generate 2 new links <t:${userData.firstGen + 3600}:R>.`, ephemeral: true });
+        await interaction.reply({ content: `Please wait, you can generate 2 new links <t:${userData.firstGen + 43200}:R>.`, ephemeral: true });
         return;
       }
       let userLink = links[Math.floor(Math.random() * links.length)]
