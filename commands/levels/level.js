@@ -47,7 +47,10 @@ module.exports = {
         where: { userID: interaction.user.id },
         defaults: { level: 1, points: 0 },
       });
-      let levelEmbed = new EmbedBuilder().setTitle("Levels").setDescription(`You are at level ${level.level}, and ${Math.floor(((level.points) / (level.level * 100)) * 100)}% of the way to hitting level ${level.level + 1}!`);
+      let levelEmbed = new EmbedBuilder()
+      .setDescription(`> **Level:** ${level.level}\n> **Progress:** ${Math.floor(((level.points) / (level.level * 100)) * 100)}% to level ${level.level + 1}!`)
+      .setColor("#49ba67");
+      
       await interaction.reply({ embeds: [levelEmbed] });
     } catch (error) {
       console.error(error);
