@@ -40,7 +40,7 @@ module.exports = {
             foundLeakers[leakers.indexOf(member.user.id)][2] = true;
             const leak = interaction.guild.members.cache.get(member.user.id);
             let leakerRole = interaction.guild.roles.cache.find((role) => role.name === "link leakers");
-            //leak.roles.add(leakerRole);
+            leak.roles.add(leakerRole);
             const logsChannel = interaction.client.channels.cache.get(logs_channel.toString());
             logsChannel.send(`${member.user.tag} was detected as a link leaker.`);
           }
