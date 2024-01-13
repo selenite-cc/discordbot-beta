@@ -3,12 +3,19 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder().setName("8ball")
-  .setDescription("View your current level.")
+  .setDescription("You ask, and the bot answers!")
   .addStringOption((opt) => opt.setName("question").setDescription("Question").setRequired(true)),
   async execute(interaction) {
     try {
-      let eightballEmbed = new EmbedBuilder().setTitle("8ball").addFields( { name: interaction.options.getString("question"), value: eightball[Math.round(Math.random() * (eightball.length - 1))]} );
-      await interaction.reply({ embed: [eightballEmbed] });
+      let eightballEmbed = new EmbedBuilder()
+	  .setDescription(`> **Question:** ${interaction.options.getString("question")}\n> **Answer:** *${eightball[Math.floor(Math.random() * eightball.length)]}*`)
+	  .setColor("#0099ff")
+	  .setFooter({
+		text: `requested from ${interaction.user.username}`,
+		iconURL: interaction.user.displayAvatarURL()
+	  });
+
+      await interaction.reply({ embeds: [eightballEmbed] });
     } catch (error) {
       console.error(error);
       await interaction.reply("There was an error. Please ping the owner if you see this.");
@@ -27,11 +34,8 @@ let eightball = [
 	"Yes",
 	"Yes - definitely",
 	"You may rely on it",
-    "Reply hazy, try again",
 	"Ask again later",
 	"Better not tell you now",
-	"Cannot predict now",
-	"Concentrate and ask again",
     "Don't count on it",
 	"My reply is no",
 	"My sources say no",
