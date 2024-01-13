@@ -2,7 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, GatewayIntentBits, Events } = require("discord.js");
 const { token, widgets, logs_channel, links, dispenser_logs } = require("./config.json");
-const client = new Client({ intents: ["Guilds", "GuildMessages", "MessageContent"], allowedMentions: { everyone: [false], roles: [false] } });
+const client = new Client({ intents: ["Guilds", "GuildMessages", "GuildMembers", "MessageContent"], allowedMentions: { everyone: [false], roles: [false] } });
 const Sequelize = require("sequelize");
 const level = new Sequelize("database", "user", "password", {
 	host: "localhost",
