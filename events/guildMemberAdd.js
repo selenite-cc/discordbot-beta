@@ -9,16 +9,25 @@ module.exports = {
 		console.log(interaction.user.id + " joined the server.");
 		const { mtimeMs } = fs.statSync("leakers.json");
 		if (Date.now() - mtimeMs > 43200000) {
-			const url = "https://leakersapi.rare1k.dev/ids";
+			const url = "https://raw.githubusercontent.com/fidind3211/LinkGuard/master/Leakers.md";
 
 			https.get(url, (res) => {
-				const path = "leakers.json";
-				const writeStream = fs.createWriteStream(path);
+				let data = ""; // Collect the response data
+				res.on("data", (chunk) => {
+					data += chunk;
+				});
 
-				res.pipe(writeStream);
+				res.on("end", () => {
+					leakers = [];
+					data
+						.split("\n")
+						.filter((e) => e.startsWith("<@!"))
+						.forEach((line) => {
+							leakers.push(line.split(" | ")[0].substring(3).slice(0, -1));
+						});
 
-				writeStream.on("finish", () => {
-					writeStream.close();
+					const path = "leakers.json";
+					fs.writeFileSync(path, JSON.stringify(leakers));
 				});
 			});
 		}
