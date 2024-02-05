@@ -1,6 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
-const { Client, Collection, GatewayIntentBits, Events } = require("discord.js");
+const { Client, Collection, GatewayIntentBits, Events, EmbedBuilder } = require("discord.js");
 const { token, widgets, logs_channel, links, dispenser_logs } = require("./config.json");
 const client = new Client({ intents: ["Guilds", "GuildMessages", "GuildMembers", "MessageContent"], allowedMentions: { everyone: [false], roles: [false] } });
 const Sequelize = require("sequelize");
@@ -101,14 +101,44 @@ for (const file of eventFiles) {
 
 client.login(token);
 
-client.on("messageDelete", (interaction) => {
+client.on("messageDelete", (message) => {
 	const logsChannel = client.channels.cache.get(logs_channel.toString());
-	logsChannel.send(`Message deleted from ${interaction.author.tag}: ${interaction.content}`);
+
+    const delEmbed = new EmbedBuilder()
+    delEmbed.setColor("#db3c30") 
+    delEmbed.setTitle("🗑️ message deleted")
+    delEmbed.setDescription(
+		`> **author:** <@${message.author.id}> \n> **channel:** <#${message.channel.id}> \n> **timestamp:** <t:${Math.floor(Date.now() / 1000)}:R>  `
+	);
+
+    if (message.content) {
+        delEmbed.addFields({name: 'message:', value: message.content});
+    }
+
+    // extra thing here to check if message has attachments
+    if (message.attachments.size > 0) {
+        const attachments = message.attachments.map((attachment) => attachment.url);
+        delEmbed.addFields({name: "attached:", value: attachments.join("\n")});
+    }
+
+    logsChannel.send({ embeds: [delEmbed] });
 });
 client.on("messageUpdate", (oldm, newm) => {
 	const logsChannel = client.channels.cache.get(logs_channel.toString());
-	if (!oldm == newm) {
-		logsChannel.send(`Message edited from ${oldm.author.tag}: ${oldm} - ${newm}`);
+	if (oldm !== newm) {
+		const ediEmbed = new EmbedBuilder()
+		ediEmbed.setColor("#e2e833") 
+		ediEmbed.setTitle("✍️ message edited")
+		ediEmbed.setDescription(
+			`> **author:** <@${oldm.author.id}> \n> **channel:** <#${oldm.channel.id}> \n> **timestamp:** <t:${Math.floor(Date.now() / 1000)}:R>  `
+		);
+
+		ediEmbed.addFields(
+			{name: 'before:', value: `${oldm}`, inline: true},
+			{name: 'after:', value: `${newm}`, inline: true},
+		);
+
+		logsChannel.send({ embeds: [ediEmbed] });
 	}
 });
 client.on("interactionCreate", async (interaction) => {
