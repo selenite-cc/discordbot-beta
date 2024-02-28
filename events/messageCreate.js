@@ -1,5 +1,5 @@
 const { Events } = require("discord.js");
-const { widgets } = require("../config.json");
+const { widgets, logs_channel } = require("../config.json");
 const profanity = require("@2toad/profanity").profanity;
 const BadWordsNext = require("bad-words-next");
 const en = require("bad-words-next/data/en.json");
@@ -54,8 +54,12 @@ module.exports = {
   name: Events.MessageCreate,
   async execute(interaction) {
     if (interaction.channelId == widgets) {
-      if (profanity.exists(interaction.content) || badwords.check(interaction.content)) {
+      let linkRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+      let ghostedRegex = /QJM9bSW/;
+      if (profanity.exists(interaction.content) || badwords.check(interaction.content) || linkRegex.test(interaction.content) || ghostedRegex.test(interaction.content)) {
         interaction.delete();
+        const logsChannel = interaction.client.channels.cache.get(logs_channel.toString());
+        logsChannel.send(`Message in #widgets deleted by ${interaction.author.username}\nprofanity 1, profanity 2, link, linker doc\n${profanity.exists(interaction.content)} ${badwords.check(interaction.content)} ${linkRegex.test(interaction.content)} ${ghostedRegex.test(interaction.content)}`);
       } else if (profanity.exists(interaction.author.tag) || badwords.check(interaction.author.tag)) {
         msg = await interaction.reply("Please change your name.");
         interaction.delete();
