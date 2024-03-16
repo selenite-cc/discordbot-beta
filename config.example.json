@@ -5,6 +5,8 @@
     "widgets": "id where the widgets speak",
     "embedhex": "unused - hex code like ffffff",
     "token": "hmm i wonder",
+    "dispenser_logs": "id of the dispenser logs",
+    "ai_key": "gemini ai key",
     "links": [
         "array",
         "of",

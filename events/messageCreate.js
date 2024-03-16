@@ -1,5 +1,5 @@
 const { Events } = require("discord.js");
-const { widgets, logs_channel } = require("../config.json");
+const { widgets, logs_channel, links } = require("../config.json");
 const profanity = require("@2toad/profanity").profanity;
 const BadWordsNext = require("bad-words-next");
 const en = require("bad-words-next/data/en.json");
@@ -69,6 +69,14 @@ module.exports = {
       }
     }
     if (!interaction.author.bot) {
+      for(let i = 0;i<links.length;i++) {
+        if(interaction.content.includes(links[i])) {
+          msg = await interaction.reply("Please do not send links from the link bot.");
+          interaction.delete;
+          await sleep(5000);
+          msg.delete();
+        }
+      }
       try {
         let [level, created] = await Levels.findOrCreate({
           where: { userID: interaction.author.id },
