@@ -11,9 +11,11 @@ module.exports = {
 		try {
 			const genAI = new GoogleGenerativeAI(ai_key);
 			const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+			console.log(interaction.options.getString("prompt"));
 			const result = await model.generateContent("You are an AI model called Selenite GPT. Selenite is an unblocked games website, available at https://selenite.cc, which you have been trained for. You may be called Selenite, or Selenite GPT. You have been trained by the Selenite dev team. The following is the prompt:\n" + interaction.options.getString("prompt"));
 			const response = await result.response;
 			const text = response.text();
+			console.log(text);
 			let linkEmbed = new EmbedBuilder()
 			.setTitle("Selenite GPT")
 			.setDescription(text)
