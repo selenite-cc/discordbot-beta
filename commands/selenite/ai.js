@@ -8,6 +8,6 @@ module.exports = {
 	.setDescription("ai")
 	.addStringOption((opt) => opt.setName("prompt").setDescription("prompt").setRequired(true)),
 	async execute(interaction) {
-		await interaction.reply("nuh uh")
+		await interaction.reply("Go to #ai")
 	},
 };
