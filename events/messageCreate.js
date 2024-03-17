@@ -1,10 +1,11 @@
 const { Events } = require("discord.js");
-const { widgets, logs_channel, links } = require("../config.json");
+const { widgets, logs_channel, links, ai_channel } = require("../config.json");
 const profanity = require("@2toad/profanity").profanity;
 const BadWordsNext = require("bad-words-next");
 const en = require("bad-words-next/data/en.json");
 const Sequelize = require("sequelize");
 const badwords = new BadWordsNext();
+const { runAI } = require("../utils.js");
 function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -69,6 +70,9 @@ module.exports = {
       }
     }
     if (!interaction.author.bot) {
+      if(interaction.channelId == ai_channel) {
+        runAI(interaction);
+      }
       for(let i = 0;i<links.length;i++) {
         if(interaction.content.includes(links[i])) {
           msg = await interaction.reply("Please do not send links from the link bot.");
