@@ -1,5 +1,5 @@
 const { Events } = require("discord.js");
-const { widgets, logs_channel, links, ai_channel } = require("../config.json");
+const { widgets, logs_channel, links, ai_channel, freaky_ai_channel } = require("../config.json");
 const profanity = require("@2toad/profanity").profanity;
 const BadWordsNext = require("bad-words-next");
 const en = require("bad-words-next/data/en.json");
@@ -71,7 +71,10 @@ module.exports = {
     }
     if (!interaction.author.bot) {
       if(interaction.channelId == ai_channel) {
-        runAI(interaction);
+        runAI(interaction, false);
+      }
+      if(interaction.channelId == freaky_ai_channel) {
+        runAI(interaction, true);
       }
       for(let i = 0;i<links.length;i++) {
         if(interaction.content.includes(links[i])) {
