@@ -12,6 +12,7 @@
   "dependencies": {
     "@2toad/profanity": "^2.2.0",
     "@google/generative-ai": "^0.3.0",
+    "axios": "^1.6.8",
     "bad-words-next": "^2.2.1",
     "discord.js": "^14.12.1",
     "sequelize": "^6.34.0",

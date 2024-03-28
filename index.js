@@ -4,6 +4,7 @@ const { Client, Collection, GatewayIntentBits, Events, EmbedBuilder } = require(
 const { token, widgets, logs_channel, links, dispenser_logs } = require("./config.json");
 const client = new Client({ intents: ["Guilds", "GuildMessages", "GuildMembers", "MessageContent"], allowedMentions: { everyone: [false], roles: [false] } });
 const Sequelize = require("sequelize");
+const { byod } = require("./utils");
 const level = new Sequelize("database", "user", "password", {
 	host: "localhost",
 	dialect: "sqlite",
@@ -104,39 +105,32 @@ client.login(token);
 client.on("messageDelete", (message) => {
 	const logsChannel = client.channels.cache.get(logs_channel.toString());
 
-    const delEmbed = new EmbedBuilder()
-    delEmbed.setColor("#db3c30") 
-    delEmbed.setTitle("🗑️ message deleted")
-    delEmbed.setDescription(
-		`> **author:** <@${message.author.id}> \n> **channel:** <#${message.channel.id}> \n> **timestamp:** <t:${Math.floor(Date.now() / 1000)}:R>  `
-	);
+	const delEmbed = new EmbedBuilder();
+	delEmbed.setColor("#db3c30");
+	delEmbed.setTitle("🗑️ message deleted");
+	delEmbed.setDescription(`> **author:** <@${message.author.id}> \n> **channel:** <#${message.channel.id}> \n> **timestamp:** <t:${Math.floor(Date.now() / 1000)}:R>  `);
 
-    if (message.content) {
-        delEmbed.addFields({name: 'message:', value: message.content});
-    }
+	if (message.content) {
+		delEmbed.addFields({ name: "message:", value: message.content });
+	}
 
-    // extra thing here to check if message has attachments
-    if (message.attachments.size > 0) {
-        const attachments = message.attachments.map((attachment) => attachment.url);
-        delEmbed.addFields({name: "attached:", value: attachments.join("\n")});
-    }
+	// extra thing here to check if message has attachments
+	if (message.attachments.size > 0) {
+		const attachments = message.attachments.map((attachment) => attachment.url);
+		delEmbed.addFields({ name: "attached:", value: attachments.join("\n") });
+	}
 
-    logsChannel.send({ embeds: [delEmbed] });
+	logsChannel.send({ embeds: [delEmbed] });
 });
 client.on("messageUpdate", (oldm, newm) => {
 	const logsChannel = client.channels.cache.get(logs_channel.toString());
 	if (oldm !== newm) {
-		const ediEmbed = new EmbedBuilder()
-		ediEmbed.setColor("#e2e833") 
-		ediEmbed.setTitle("✍️ message edited")
-		ediEmbed.setDescription(
-			`> **author:** <@${oldm.author.id}> \n> **channel:** <#${oldm.channel.id}> \n> **timestamp:** <t:${Math.floor(Date.now() / 1000)}:R>  `
-		);
+		const ediEmbed = new EmbedBuilder();
+		ediEmbed.setColor("#e2e833");
+		ediEmbed.setTitle("✍️ message edited");
+		ediEmbed.setDescription(`> **author:** <@${oldm.author.id}> \n> **channel:** <#${oldm.channel.id}> \n> **timestamp:** <t:${Math.floor(Date.now() / 1000)}:R>  `);
 
-		ediEmbed.addFields(
-			{name: 'before:', value: `${oldm}`, inline: true},
-			{name: 'after:', value: `${newm}`, inline: true},
-		);
+		ediEmbed.addFields({ name: "before:", value: `${oldm}`, inline: true }, { name: "after:", value: `${newm}`, inline: true });
 
 		logsChannel.send({ embeds: [ediEmbed] });
 	}
@@ -172,5 +166,10 @@ client.on("interactionCreate", async (interaction) => {
 				return;
 			}
 		}
+		if(interaction.customId.includes("byod")) {
+			byod(interaction);
+		}
+	} else if (interaction.isModalSubmit()) {
+		byod(interaction);
 	}
 });

@@ -1,6 +1,7 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const { ai_key, logs_channel } = require("./config.json");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require("axios");
 
 async function runAI(interaction, freaky) {
 	try {
@@ -35,4 +36,49 @@ async function runAI(interaction, freaky) {
 	
 }
 
-module.exports = { runAI }
+
+async function byod(interaction) {
+	if(interaction.isModalSubmit()) {
+		if(interaction.fields.getTextInputValue("byodB_Input")) {
+			await interaction.reply({ content: 'Thank you! We are currently checking to see if it is valid.', ephemeral: true });
+            const url = 'http://localhost:5674/add';
+            const data = { domain: interaction.fields.getTextInputValue("byodB_Input") };
+			try {
+				const response = await axios.post(url, data, {
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+				reason = "**Congrats!**\nYou have successfully created your own link.\nYou may post it to community links if you'd like, or just continue.";
+			} catch (error) {
+				if (error.response) {
+					reason = error.response.data;
+				} else if (error.request) {
+					reason = 'No response received\nmajor fuck up, should never happen. dm @skysthelimit.dev';
+				} else {
+					reason = 'no response\nis the api down? dm @skysthelimit.dev'
+				}
+			}
+			await interaction.followUp({content: reason, ephemeral: true});
+		}
+	}
+	if (interaction.customId === "byodA") {
+		let byodEmbed = new EmbedBuilder().setTitle("Bring Your Own Domain").setDescription("Before we begin, let's make sure you have a domain set up!\nThis may vary across whatever you're using.\n\n").addFields({ name: "FreeDNS", value: "This assumes that you've already found a link that you like.\nOnce you are on the link creating page, make sure the type is A, and that you set the destination to \"5.161.118.69\". After you're done, click Continue.", inline: true }, { name: "Cloudflare", value: 'This assumes you already have already bought a domain.\nGo into the DNS settings, and add a new record. If you want it on the top level (for example, selenite.cc), then set Name to @, but if you want it to be on a subdomain (for example, selenite.skys.day), then set Name to the subdomain you want (if my domain is skys.day and I wanted to have Selenite on selenite.skys.day, set name to selenite). Set the IPv4 address to "5.161.118.69", and make sure Proxy status is set to DNS Only, and **NOT** Proxied. Click Save.', inline: true }, { name: "\n", value: "**Once you're done, then wait a few minutes to make sure everything is saved and working, and click Continue.**\n**To submit a domain, please type it without any slashes or anything other than the domain. If you created a link such as \"https://selenite.cc/projects.html\", please only type \"selenite.cc\".**" });
+		const link = new ButtonBuilder().setCustomId("byodB").setLabel("Continue").setStyle(ButtonStyle.Primary);
+		const button = new ActionRowBuilder().addComponents(link);
+		await interaction.reply({ embeds: [byodEmbed], components: [button], ephemeral: true });
+	} else if (interaction.customId === "byodB") {
+		const modal = new ModalBuilder().setCustomId("byodModal").setTitle("Bring Your Own Domain");
+
+		const byodInput = new TextInputBuilder()
+			.setCustomId("byodB_Input")
+			.setMaxLength(70)
+			.setMinLength(5)
+			.setLabel("Insert your link below")
+			.setStyle(TextInputStyle.Short);
+		const firstActionRow = new ActionRowBuilder().addComponents(byodInput);
+		modal.addComponents(firstActionRow);
+		await interaction.showModal(modal);
+	}
+}
+module.exports = { runAI, byod }
