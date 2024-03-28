@@ -41,7 +41,7 @@ async function byod(interaction) {
 	if(interaction.isModalSubmit()) {
 		if(interaction.fields.getTextInputValue("byodB_Input")) {
 			let updateEmbed = new EmbedBuilder().setTitle("Bring Your Own Domain").setDescription("Thank you! We are currently checking to make sure your link is valid.");
-			await interaction.reply({embeds: updateEmbed, ephemeral: true});
+			await interaction.reply({embeds: [updateEmbed], ephemeral: true});
             const url = 'http://localhost:5674/add';
             const data = { domain: interaction.fields.getTextInputValue("byodB_Input") };
 			try {
