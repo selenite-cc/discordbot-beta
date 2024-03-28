@@ -61,7 +61,7 @@ async function byod(interaction) {
 				}
 			}
 			let finalEmbed = new EmbedBuilder().setTitle("Bring Your Own Domain").setDescription(reason);
-			await interaction.followUp({embeds: finalEmbed, ephemeral: true});
+			await interaction.followUp({embeds: [finalEmbed], ephemeral: true});
 		}
 	}
 	if (interaction.customId === "byodA") {
