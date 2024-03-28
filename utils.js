@@ -40,7 +40,8 @@ async function runAI(interaction, freaky) {
 async function byod(interaction) {
 	if(interaction.isModalSubmit()) {
 		if(interaction.fields.getTextInputValue("byodB_Input")) {
-			await interaction.reply({ content: 'Thank you! We are currently checking to see if it is valid.', ephemeral: true });
+			let updateEmbed = new EmbedBuilder().setTitle("Bring Your Own Domain").setDescription("Thank you! We are currently checking to make sure your link is valid.");
+			await interaction.reply({embeds: updateEmbed, ephemeral: true});
             const url = 'http://localhost:5674/add';
             const data = { domain: interaction.fields.getTextInputValue("byodB_Input") };
 			try {
@@ -49,7 +50,7 @@ async function byod(interaction) {
 						'Content-Type': 'application/json'
 					}
 				});
-				reason = "**Congrats!**\nYou have successfully created your own link.\nYou may post it to community links if you'd like, or just continue.\n**You must visit the website once and then wait a few seconds before closing it and opening it for a secure conneection. Every other time after that, it will load fine.**";
+				reason = "**Congrats!**\nYou have successfully created your own link.\nYou may post it to community links if you'd like, or just continue.\n**Please wait 10-20 seconds to let the link finish processing, and then you can visit your link.**";
 			} catch (error) {
 				if (error.response) {
 					reason = error.response.data;
@@ -59,7 +60,8 @@ async function byod(interaction) {
 					reason = 'no response\nis the api down? dm @skysthelimit.dev'
 				}
 			}
-			await interaction.followUp({content: reason, ephemeral: true});
+			let finalEmbed = new EmbedBuilder().setTitle("Bring Your Own Domain").setDescription(reason);
+			await interaction.followUp({embeds: finalEmbed, ephemeral: true});
 		}
 	}
 	if (interaction.customId === "byodA") {
