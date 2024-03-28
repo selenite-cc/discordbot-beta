@@ -49,7 +49,7 @@ async function byod(interaction) {
 						'Content-Type': 'application/json'
 					}
 				});
-				reason = "**Congrats!**\nYou have successfully created your own link.\nYou may post it to community links if you'd like, or just continue.";
+				reason = "**Congrats!**\nYou have successfully created your own link.\nYou may post it to community links if you'd like, or just continue.\n**You must visit the website once and then wait a few seconds before closing it and opening it for a secure conneection. Every other time after that, it will load fine.**";
 			} catch (error) {
 				if (error.response) {
 					reason = error.response.data;
