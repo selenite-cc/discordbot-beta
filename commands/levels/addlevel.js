@@ -10,7 +10,7 @@ const sequelize = new Sequelize("database", "user", "password", {
 });
 const Levels = sequelize.define("levels", {
   userID: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.STRING,
     primaryKey: true,
   },
   level: {

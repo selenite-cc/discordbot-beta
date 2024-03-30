@@ -21,7 +21,7 @@ const sequelize = new Sequelize("database", "user", "password", {
 });
 const Levels = sequelize.define("levels", {
   userID: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.STRING,
     primaryKey: true,
   },
   level: {
@@ -49,7 +49,15 @@ const Levels = sequelize.define("levels", {
   },
 });
 let reward = {
-  "9999": "1"
+  "1": "1223470895918481539",
+  "3": "1223470930609832059",
+  "5": "1223470948976558191",
+  "10": "1223470964533231731",
+  "15": "1223470982132535416",
+  "20": "1223471004769058917",
+  "30": "1223471022359969882",
+  "40": "1223471048456929310",
+  "50": "1223471066165411900"
 }
 module.exports = {
   name: Events.MessageCreate,
