@@ -49,7 +49,7 @@ module.exports = {
       console.log(leaderboard);
       let levelEmbed = new EmbedBuilder()
       .setTitle("Leaderboard")
-      for(let i = page*10; i < page*10+10; i++) {
+      for(let i = page*10; i < page*10+leaderboard.length; i++) {
         levelEmbed.addFields({ name: `${i+1}.`, value: `<@${leaderboard[i].userID}>: Level ${leaderboard[i].level}, and ${Math.round(leaderboard[i].points / leaderboard[i].level)}% of the way to the next level!` });
       }
       
