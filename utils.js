@@ -117,7 +117,7 @@ async function proxy(interaction) {
 			console.log(interaction.fields.getTextInputValue("proxy_infoModal_pass").length);
 			if (interaction.fields.getTextInputValue("proxy_infoModal_pass").length == "0") {
 				let characters = "1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
-				while(password.length < 10) {
+				while (password.length < 10) {
 					console.log("asdnh");
 					password += characters.charAt(Math.floor(Math.random() * characters.length));
 				}
@@ -133,25 +133,27 @@ async function proxy(interaction) {
 			fs.writeFileSync(filePath, JSON.stringify(proxy_requestdata));
 		} else if (interaction.customId == "proxy_accept") {
 			interaction.message.reply("accepted!! yippee :3");
-			let user = await interaction.guild.members.cache.get(proxy_requestdata[interaction.message.id][2])
-			await user.send(`Your proxy request got accepted! Here is your link and password!\nLink: ${password = "https://" + interaction.fields.getTextInputValue("proxy_link")}\nPassword: ${proxy_requestdata[interaction.message.id][1]}`)
-			proxy_requestdata[interaction.message.id][0] = interaction.fields.getTextInputValue("proxy_link")
+			let user = await interaction.guild.members.cache.get(proxy_requestdata[interaction.message.id][2]);
+			await user.send(`Your proxy request got accepted! Here is your link and password!\nLink: ${(password = "https://" + interaction.fields.getTextInputValue("proxy_link"))}\nPassword: ${proxy_requestdata[interaction.message.id][1]}`);
+			proxy_requestdata[interaction.message.id][0] = interaction.fields.getTextInputValue("proxy_link");
 			proxy_requestdata[interaction.message.id][3] = "accepted";
 			fs.writeFileSync(filePath, JSON.stringify(proxy_requestdata));
-			fetch(`http://${proxy_ip}/api/addLink`, {
-				method: 'POST', 
+			await fetch(`http://${proxy_ip}/api/addLink`, {
+				credentials: "include",
 				headers: {
-				  'Content-Type': 'application/json',
+					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({"link": interaction.fields.getTextInputValue("proxy_link"), "password": proxy_requestdata[interaction.message.id][1], "auth": proxy_auth}), 
-			  })
-			  setTimeout(() => {
-				fetch(`https://${interaction.fields.getTextInputValue("proxy_link")}/`)
-			  }, 2000)
+				body: `{"link":"${interaction.fields.getTextInputValue("proxy_link")}","password":"${proxy_requestdata[interaction.message.id][1]}","auth":"${proxy_auth}"}`,
+				method: "POST",
+				mode: "cors",
+			});
+			setTimeout(() => {
+				fetch(`https://${interaction.fields.getTextInputValue("proxy_link")}/`);
+			}, 2000);
 		} else if (interaction.customId == "proxy_deny") {
 			interaction.message.reply("denied.. :(");
-			let user = await interaction.guild.members.cache.get(proxy_requestdata[interaction.message.id][2])
-			await user.send(`Your proxy request got denied.\nReason: \`${interaction.fields.getTextInputValue("proxy_reason")}\``)
+			let user = await interaction.guild.members.cache.get(proxy_requestdata[interaction.message.id][2]);
+			await user.send(`Your proxy request got denied.\nReason: \`${interaction.fields.getTextInputValue("proxy_reason")}\``);
 			proxy_requestdata[interaction.message.id][3] = "denied";
 			fs.writeFileSync(filePath, JSON.stringify(proxy_requestdata));
 		}
