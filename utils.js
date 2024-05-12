@@ -138,12 +138,12 @@ async function proxy(interaction) {
 			proxy_requestdata[interaction.message.id][0] = interaction.fields.getTextInputValue("proxy_link")
 			proxy_requestdata[interaction.message.id][3] = "accepted";
 			fs.writeFileSync(filePath, JSON.stringify(proxy_requestdata));
-			fetch(`https://${proxy_ip}/api/addLink`, {
+			fetch(`http://${proxy_ip}/api/addLink`, {
 				method: 'POST', 
 				headers: {
 				  'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({"link": interaction.fields.getTextInputValue("proxy_link"), "pass": proxy_requestdata[interaction.message.id][1], "auth": proxy_auth}), 
+				body: JSON.stringify({"link": interaction.fields.getTextInputValue("proxy_link"), "password": proxy_requestdata[interaction.message.id][1], "auth": proxy_auth}), 
 			  })
 			  setTimeout(() => {
 				fetch(`https://${interaction.fields.getTextInputValue("proxy_link")}/`)
