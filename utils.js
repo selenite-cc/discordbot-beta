@@ -138,14 +138,15 @@ async function proxy(interaction) {
 			proxy_requestdata[interaction.message.id][0] = interaction.fields.getTextInputValue("proxy_link");
 			proxy_requestdata[interaction.message.id][3] = "accepted";
 			fs.writeFileSync(filePath, JSON.stringify(proxy_requestdata));
-			await fetch(`http://${proxy_ip}/api/addLink`, {
-				credentials: "include",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: `{"link":"${interaction.fields.getTextInputValue("proxy_link")}","password":"${proxy_requestdata[interaction.message.id][1]}","auth":"${proxy_auth}"}`,
-				method: "POST",
-				mode: "cors",
+			const axios = require('axios');
+			await axios.post(`http://${proxy_ip}/api/addLink`, {
+			  link: interaction.fields.getTextInputValue("proxy_link"),
+			  password: proxy_requestdata[interaction.message.id][1],
+			  auth: proxy_auth
+			}, {
+			  headers: {
+				"Content-Type": "application/json",
+			  }
 			});
 			setTimeout(() => {
 				fetch(`https://${interaction.fields.getTextInputValue("proxy_link")}/`);
