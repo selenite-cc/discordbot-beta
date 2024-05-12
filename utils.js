@@ -1,5 +1,5 @@
 const { EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { ai_key, logs_channel, proxy_requests, proxy_auth } = require("./config.json");
+const { ai_key, logs_channel, proxy_requests, proxy_auth, proxy_ip } = require("./config.json");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const axios = require("axios");
 let proxy_requestdata;
