@@ -4,7 +4,7 @@ const { Client, Collection, GatewayIntentBits, Events, EmbedBuilder } = require(
 const { token, widgets, logs_channel, links, dispenser_logs } = require("./config.json");
 const client = new Client({ intents: ["Guilds", "GuildMessages", "GuildMembers", "MessageContent"], allowedMentions: { everyone: [false], roles: [false] } });
 const Sequelize = require("sequelize");
-const { byod } = require("./utils");
+const { byod, proxy } = require("./utils");
 const level = new Sequelize("database", "user", "password", {
 	host: "localhost",
 	dialect: "sqlite",
@@ -169,7 +169,15 @@ client.on("interactionCreate", async (interaction) => {
 		if(interaction.customId.includes("byod")) {
 			byod(interaction);
 		}
+		if(interaction.customId.includes("proxy")) {
+			proxy(interaction);
+		}
 	} else if (interaction.isModalSubmit()) {
-		byod(interaction);
+		if(interaction.customId.includes("byod")) {
+			byod(interaction);
+		}
+		if(interaction.customId.includes("proxy")) {
+			proxy(interaction);
+		}
 	}
 });
