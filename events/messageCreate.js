@@ -85,7 +85,7 @@ module.exports = {
         runAI(interaction, true);
       }
       for(let i = 0;i<links.length;i++) {
-        if(interaction.content.includes(links[i].slice(8)) {
+        if(interaction.content.includes(links[i].slice(8))) {
           msg = await interaction.reply("Please do not send links from the link bot.");
           interaction.delete();
           await sleep(5000);
