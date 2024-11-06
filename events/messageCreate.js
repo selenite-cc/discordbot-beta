@@ -65,7 +65,7 @@ module.exports = {
     if (interaction.channelId == widgets) {
       let linkRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
       let ghostedRegex = /QJM9bSW/;
-      if (profanity.exists(interaction.content) || badwords.check(interaction.content) || linkRegex.test(interaction.content) || ghostedRegex.test(interaction.content)) {
+      if (profanity.exists(interaction.content) || badwords.check(interaction.content) || linkRegex.test(interaction.content) || ghostedRegex.test(interaction.content) || interaction.content.includes("trump") || interaction.content.includes("harris")) {
         interaction.delete();
         const logsChannel = interaction.client.channels.cache.get(logs_channel.toString());
         logsChannel.send(`Message in #widgets deleted by ${interaction.author.username}\nprofanity 1, profanity 2, link, linker doc\n${profanity.exists(interaction.content)} ${badwords.check(interaction.content)} ${linkRegex.test(interaction.content)} ${ghostedRegex.test(interaction.content)}`);
